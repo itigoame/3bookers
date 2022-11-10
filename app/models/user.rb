@@ -10,14 +10,14 @@ class User < ApplicationRecord
   has_one_attached :profile_image
 
   has_many :books
-  #　フォローされた
+  # フォローした
   has_many :followers, class_name: "Relationship", foreign_key: :follower_id, dependent: :destroy
-  # フォロワー一覧表示
+  # フォロー一覧表示
   has_many :follower_users,  through: :followers, source: :followed
 
-  # フォローした
+  # フォローされた
   has_many :followings, class_name: "Relationship", foreign_key: :followed_id, dependent: :destroy
-  # フォロー一覧表示
+  # フォロワー一覧表示
   has_many :following_users, through: :followings, source: :follower
 
   # フォロー
@@ -26,11 +26,11 @@ class User < ApplicationRecord
   end
   # フォロー解除
   def unfollow(user)
-    followings.find_by(followed_id: user.id).destroy
+    followers.find_by(followed_id: user.id).destroy
   end
   # フォロー中か確認
   def following?(user)
-    followings.include?(user)
+    follower_users.include?(user)
   end
 
   def get_profile_image
