@@ -12,21 +12,21 @@ class User < ApplicationRecord
   has_many :books
   #　フォローされた
   has_many :followers, class_name: "Relationship", foreign_key: :follower_id, dependent: :destroy
+  # フォロワー一覧表示
+  has_many :follower_users,  through: :followers, source: :followed
+
   # フォローした
   has_many :followings, class_name: "Relationship", foreign_key: :followed_id, dependent: :destroy
-
-  # フォロワー一覧表示
-  has_many :follower_users,  through: :followings, source: :followed
   # フォロー一覧表示
-  has_many :following_users, through: :followers, source: :follower
+  has_many :following_users, through: :followings, source: :follower
 
   # フォロー
   def follow(user)
-    followings.create(followed_id: user_id)
+    followers.create(followed_id: user.id)
   end
   # フォロー解除
   def unfollow(user)
-    followings.find_by(followed_id: user_id).destroy
+    followings.find_by(followed_id: user.id).destroy
   end
   # フォロー中か確認
   def following?(user)
